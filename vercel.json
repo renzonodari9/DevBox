@@ -16,6 +16,6 @@
     }
   ],
   "env": {
-    "REACT_APP_BACKEND_URL": "https://devbox-backend.onrender.com"
+    "REACT_APP_BACKEND_URL": "https://devbox-backend-at8i.onrender.com"
   }
 }
