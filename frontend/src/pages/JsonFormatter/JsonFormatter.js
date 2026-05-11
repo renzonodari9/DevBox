@@ -24,7 +24,7 @@ const JsonFormatter = () => {
     setOutput('');
 
     try {
-      const response = await axios.post('http://localhost:3001/api/json/format', {
+       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/json/format`, {
         json: input
       });
 
@@ -50,7 +50,7 @@ const JsonFormatter = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/json/validate', {
+       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/json/validate`, {
         json: input
       });
 

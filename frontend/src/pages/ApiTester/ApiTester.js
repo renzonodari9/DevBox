@@ -48,7 +48,7 @@ const ApiTester = () => {
         }
       }
 
-      const result = await axios.post('http://localhost:3001/api/test/request', {
+       const result = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/test/request`, {
         method,
         url,
         headers: parsedHeaders,
