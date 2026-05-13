@@ -20,7 +20,7 @@ const Base64Tool = () => {
 
     setError('');
     try {
-      const response = await axios.post('http://localhost:3001/api/base64/encode', {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/base64/encode`, {
         text: input
       });
 
@@ -40,7 +40,7 @@ const Base64Tool = () => {
 
     setError('');
     try {
-      const response = await axios.post('http://localhost:3001/api/base64/decode', {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/base64/decode`, {
         encoded: input
       });
 
@@ -130,7 +130,11 @@ const Base64Tool = () => {
           </div>
         </Card>
 
-        <div className="base64-swap" onClick={handleSwap}>
+        <button
+          className="base64-swap"
+          onClick={handleSwap}
+          aria-label="Swap encode/decode mode"
+        >
           <motion.div
             className="swap-icon"
             whileHover={{ scale: 1.1 }}
@@ -138,7 +142,7 @@ const Base64Tool = () => {
           >
             ⇄
           </motion.div>
-        </div>
+        </button>
 
         <Card className="base64-card">
           <div className="card-header">

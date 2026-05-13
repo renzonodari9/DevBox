@@ -4,6 +4,7 @@ import axios from 'axios';
 import Card from '../../components/common/Card/Card';
 import Button from '../../components/common/Button/Button';
 import Loading from '../../components/common/Loading/Loading';
+import { renderJson } from '../../utils/syntaxHighlight';
 import './ApiTester.css';
 
 const ApiTester = () => {
@@ -80,146 +81,118 @@ const ApiTester = () => {
     if (status >= 300 && status < 400) return 'status-redirect';
     if (status >= 400 && status < 500) return 'status-client-error';
     return 'status-server-error';
-  };
-
-  const renderJson = (data) => {
-    const json = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
-    return json.split('\n').map((line, i) => (
-      <div key={i} className="json-line">
-        <span className="json-line-number">{i + 1}</span>
-        <span dangerouslySetInnerHTML={{ __html: syntaxHighlight(line) }} />
-      </div>
-    ));
-  };
-
-  const syntaxHighlight = (json) => {
-    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    return json.replace(
-      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-      (match) => {
-        let cls = 'json-number';
-        if (/^"/.test(match)) {
-          cls = /:$/.test(match) ? 'json-key' : 'json-string';
-        } else if (/true|false/.test(match)) {
-          cls = 'json-boolean';
-        } else if (/null/.test(match)) {
-          cls = 'json-null';
-        }
-        return `<span class="${cls}">${match}</span>`;
-      }
-    );
-  };
+};
 
   return (
-    <motion.div
-      className="page-container"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <h1 className="section-title">API Tester</h1>
-      <p className="section-subtitle">Prueba y analiza APIs</p>
+     <motion.div
+       className="page-container"
+       initial={{ opacity: 0, y: 20 }}
+       animate={{ opacity: 1, y: 0 }}
+       transition={{ duration: 0.3 }}
+     >
+       <h1 className="section-title">API Tester</h1>
+       <p className="section-subtitle">Prueba y analiza APIs</p>
 
-      <Card className="api-tester-card">
-        <div className="request-row">
-          <div className="method-selector">
-            <select
-              value={method}
-              onChange={(e) => setMethod(e.target.value)}
-              className="method-select"
-            >
-              {methods.map(m => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </select>
-          </div>
-          <input
-            type="text"
-            className="url-input"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://api.ejemplo.com/endpoint"
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-          />
-          <Button onClick={handleSend} variant="primary" disabled={loading}>
-            {loading ? 'Enviando...' : 'Enviar →'}
-          </Button>
-        </div>
+       <Card className="api-tester-card">
+         <div className="request-row">
+           <div className="method-selector">
+             <select
+               value={method}
+               onChange={(e) => setMethod(e.target.value)}
+               className="method-select"
+             >
+               {methods.map(m => (
+                 <option key={m} value={m}>{m}</option>
+               ))}
+             </select>
+           </div>
+           <input
+             type="text"
+             className="url-input"
+             value={url}
+             onChange={(e) => setUrl(e.target.value)}
+             placeholder="https://api.ejemplo.com/endpoint"
+             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+           />
+           <Button onClick={handleSend} variant="primary" disabled={loading}>
+             {loading ? 'Enviando...' : 'Enviar →'}
+           </Button>
+         </div>
 
-        <div className="request-config">
-          <div className="config-section">
-            <div className="config-header">
-              <h4>Headers</h4>
-            </div>
-            <textarea
-              className="config-textarea"
-              value={headers}
-              onChange={(e) => setHeaders(e.target.value)}
-              rows={4}
-              placeholder='{"Content-Type": "application/json"}'
-            />
-          </div>
+         <div className="request-config">
+           <div className="config-section">
+             <div className="config-header">
+               <h4>Headers</h4>
+             </div>
+             <textarea
+               className="config-textarea"
+               value={headers}
+               onChange={(e) => setHeaders(e.target.value)}
+               rows={4}
+               placeholder='{"Content-Type": "application/json"}'
+             />
+           </div>
 
-          {(method === 'POST' || method === 'PUT' || method === 'PATCH') && (
-            <div className="config-section">
-              <div className="config-header">
-                <h4>Body</h4>
-              </div>
-              <textarea
-                className="config-textarea"
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                rows={6}
-                placeholder='{"key": "value"}'
-              />
-            </div>
-          )}
-        </div>
-      </Card>
+           {(method === 'POST' || method === 'PUT' || method === 'PATCH') && (
+             <div className="config-section">
+               <div className="config-header">
+                 <h4>Body</h4>
+               </div>
+               <textarea
+                 className="config-textarea"
+                 value={body}
+                 onChange={(e) => setBody(e.target.value)}
+                 rows={6}
+                 placeholder='{"key": "value"}'
+               />
+             </div>
+           )}
+         </div>
+       </Card>
 
-      {error && (
-        <div className="error-message">{error}</div>
-      )}
+       {error && (
+         <div className="error-message">{error}</div>
+       )}
 
-      {loading && (
-        <div className="loading-container">
-          <Loading size="large" />
-        </div>
-      )}
+       {loading && (
+         <div className="loading-container">
+           <Loading size="large" />
+         </div>
+       )}
 
-      {response && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="response-meta">
-            <div className={`status-badge ${getStatusClass(response.status)}`}>
-              {response.status} {response.statusText}
-            </div>
-            <div className="duration-badge">
-              {response.duration}ms
-            </div>
-            <Button
-              onClick={() => handleCopy(response.data)}
-              variant="secondary"
-              size="small"
-            >
-              Copiar respuesta
-            </Button>
-          </div>
+       {response && (
+         <motion.div
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+         >
+           <div className="response-meta">
+             <div className={`status-badge ${getStatusClass(response.status)}`}>
+               {response.status} {response.statusText}
+             </div>
+             <div className="duration-badge">
+               {response.duration}ms
+             </div>
+             <Button
+               onClick={() => handleCopy(response.data)}
+               variant="secondary"
+               size="small"
+             >
+               Copiar respuesta
+             </Button>
+           </div>
 
-          <Card className="response-card">
-            <div className="card-header">
-              <h3>Respuesta</h3>
-            </div>
-            <div className="response-body">
-              {renderJson(response.data)}
-            </div>
-          </Card>
-        </motion.div>
-      )}
-    </motion.div>
-  );
+           <Card className="response-card">
+             <div className="card-header">
+               <h3>Respuesta</h3>
+             </div>
+             <div className="response-body">
+               {renderJson(response.data)}
+             </div>
+           </Card>
+         </motion.div>
+       )}
+     </motion.div>
+   );
 };
 
 export default ApiTester;
